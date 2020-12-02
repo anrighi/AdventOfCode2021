@@ -1,7 +1,17 @@
-from utility.file_reader import read_file
 import os
 
-from utility.parser import convert_to_int
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+
+def read_file(file_path):
+    f = open(dir_path + "/" + file_path, "r")
+    return f.read().split()
+
+
+def convert_to_int(string_list):
+    for i in range(len(string_list)):
+        string_list[i] = int(string_list[i])
+    return string_list
 
 
 def part_1(value_list):
@@ -24,9 +34,7 @@ def part_2(value_list):
 
 
 if __name__ == '__main__':
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-
-    input_read = read_file(dir_path + "/" + "input1.txt")
+    input_read = read_file("input1.txt")
 
     value_list = convert_to_int(input_read)
     value_list.sort()
