@@ -1,43 +1,70 @@
 import os
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-
-
-def read_file(file_path):
-    f = open(dir_path + "/" + file_path, "r")
-    return f.read().split()
-
-
-def convert_to_int(string_list):
-    for i in range(len(string_list)):
-        string_list[i] = int(string_list[i])
-    return string_list
+from utility.file_reader import read_file
+from utility.parser import convert_to_int
 
 
 def part_1(value_list):
-    list_length = len(value_list)
+    counter = 0
 
-    for i in range(list_length):
-        for k in range(list_length):
-            if value_list[i] + value_list[k] == 2020:
-                return value_list[i] * value_list[k]
+    for idx, value in enumerate(value_list):
+        if idx % 3 == 0:
+            value_range = convert_to_int(value.split('-'))
+
+            letter = value_list[idx + 1][0:1]
+            password = value_list[idx + 2]
+
+            letter_occurrences = password.count(letter)
+
+            if value_range[0] <= letter_occurrences <= value_range[1]:
+                counter += 1
+
+    return counter
+
+
+# RecursionError: maximum recursion depth exceeded while calling a Python object
+def part_1_recursive(value_list, counter):
+    print(len(value_list))
+
+    if len(value_list) == 0:
+        return counter
+    else:
+        value_range = convert_to_int(value_list[0].split('-'))
+        letter = value_list[1][0:1]
+        password = value_list[2]
+
+        letter_occurrences = password.count(letter)
+
+        if value_range[0] <= letter_occurrences <= value_range[1]:
+            counter += 1
+
+        return part_1_recursive(value_list[3:], counter)
 
 
 def part_2(value_list):
-    list_length = len(value_list)
+    counter = 0
 
-    for i in range(list_length):
-        for k in range(list_length):
-            for l in range(list_length):
-                if value_list[i] + value_list[k] + value_list[l] == 2020:
-                    return value_list[i] * value_list[k] * value_list[l]
+    for idx, value in enumerate(value_list):
+        if idx % 3 == 0:
+            value_range = convert_to_int(value.split('-'))
+
+            letter = value_list[idx + 1][0:1]
+            password = value_list[idx + 2]
+
+            idx0 = value_range[0] - 1
+            idx1 = value_range[1] - 1
+
+            if password[idx0] == letter or password[idx1] == letter:
+                if password[idx0] != password[idx1]:
+                    counter += 1
+
+    return counter
 
 
 if __name__ == '__main__':
-    input_read = read_file("input1.txt")
+    dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    value_list = convert_to_int(input_read)
-    value_list.sort()
+    input_read = read_file(dir_path + "/" + "input1.txt")
 
-    print("part 1: ", part_1(value_list))
-    print("part 2: ", part_2(value_list))
+    print('part 1:', part_1(input_read))
+    print('part 2:', part_2(input_read))
