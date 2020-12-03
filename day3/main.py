@@ -1,5 +1,4 @@
 import os
-import time
 
 from utility.file_reader import read_file
 from utility.parser import convert_to_int
@@ -67,10 +66,5 @@ if __name__ == '__main__':
 
     input_read = read_file(dir_path + "/" + "input1.txt")
 
-    start_time = time.time()
     print('part 1:', part_1(input_read))
-    print("--- %s seconds ---" % (time.time() - start_time), "\n")
-
-    start_time = time.time()
     print('part 2:', part_2(input_read))
-    print("--- %s seconds ---" % (time.time() - start_time), "\n")
