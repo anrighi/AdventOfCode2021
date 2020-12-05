@@ -1,47 +1,68 @@
+import math
 import os
 import time
 
 from utility.file_reader import read_file
-from utility.parser import convert_to_int
 
 
-def path_traversal(value_list, right_step, down_step):
-    path_idx = 0
-    counter = 0
-
-    path_length = len(value_list[0])
-
-    for idx, value in enumerate(value_list):
-
-        if idx % down_step == 0:
-            single_path = value
-            tree_or_space = single_path[path_idx]
-
-            if tree_or_space == '#':
-                counter += 1
-
-            path_idx += right_step
-
-            if path_idx >= path_length:
-                path_idx = path_idx % path_length
-
-    return counter
+def lower_half(number):
+    diff = (number[1] - number[0]) / 2
+    return [number[0], math.floor(number[1] - diff)]
 
 
-def part_1(value_list):
-    right_3_down_1 = path_traversal(value_list, 3, 1)
+def upper_half(number):
+    diff = (number[1] - number[0]) / 2
+    return [math.ceil(diff + number[0]), number[1]]
 
-    return right_3_down_1
+
+def find_id(row_seat):
+    row_length = len(row_seat)
+
+    seat_row = [0, 127]
+    seat_column = [0, 7]
+
+    function_switcher = {
+        'L': lower_half,
+        'R': upper_half,
+        'F': lower_half,
+        'B': upper_half,
+    }
+
+    for idx in range(row_length):
+        letter = row_seat[idx]
+        if letter == 'R' or letter == 'L':
+            seat_column = function_switcher[letter](seat_column)
+        else:
+            seat_row = function_switcher[letter](seat_row)
+
+    return seat_row[0] * 8 + seat_column[0]
+
+
+def part_1(value_list, max_seat_id=0):
+    if len(value_list) == 0:
+        return max_seat_id
+
+    seat_id = find_id(value_list[0])
+
+    if seat_id > max_seat_id:
+        return part_1(value_list[1:], seat_id)
+    else:
+        return part_1(value_list[1:], max_seat_id)
 
 
 def part_2(value_list):
-    right_1_down_1 = path_traversal(value_list, 1, 1)
-    right_3_down_1 = path_traversal(value_list, 3, 1)
-    right_5_down_1 = path_traversal(value_list, 5, 1)
-    right_7_down_1 = path_traversal(value_list, 7, 1)
-    right_1_down_2 = path_traversal(value_list, 1, 2)
+    list_length = len(value_list)
+    seat_id_list = []
 
-    return right_1_down_1 * right_1_down_2 * right_3_down_1 * right_5_down_1 * right_7_down_1
+    for idx in range(list_length):
+        seat_id = find_id(value_list[idx])
+        seat_id_list.append(seat_id)
+
+    seat_id_list.sort()
+
+    for idx, val in enumerate(seat_id_list):
+        if idx != val - seat_id_list[0]:
+            return idx + seat_id_list[0]
 
 
 if __name__ == '__main__':
