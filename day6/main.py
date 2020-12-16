@@ -5,39 +5,6 @@ import time
 from utility.file_reader import read_file
 
 
-def lower_half(number):
-    diff = (number[1] - number[0]) / 2
-    return [number[0], math.floor(number[1] - diff)]
-
-
-def upper_half(number):
-    diff = (number[1] - number[0]) / 2
-    return [math.ceil(diff + number[0]), number[1]]
-
-
-def find_id(row_seat):
-    row_length = len(row_seat)
-
-    seat_row = [0, 127]
-    seat_column = [0, 7]
-
-    function_switcher = {
-        'L': lower_half,
-        'R': upper_half,
-        'F': lower_half,
-        'B': upper_half,
-    }
-
-    for idx in range(row_length):
-        letter = row_seat[idx]
-        if letter == 'R' or letter == 'L':
-            seat_column = function_switcher[letter](seat_column)
-        else:
-            seat_row = function_switcher[letter](seat_row)
-
-    return seat_row[0] * 8 + seat_column[0]
-
-
 def part_1(value_list, total=0):
     if len(value_list) == 0:
         return total
